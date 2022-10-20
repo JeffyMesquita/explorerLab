@@ -100,7 +100,7 @@ securityCodeMasked.on('accept', () => {
 });
 
 function updateSecurityCode(code) {
-  const ccSecurity = document.querySelector('cc-security .value');
+  const ccSecurity = document.querySelector('.cc-security .value');
 
   ccSecurity.innerText = code.length === 0 ? '123' : code;
 }
@@ -122,7 +122,7 @@ expirationDateMasked.on('accept', () => {
 });
 
 function updateExpirationDate(date) {
-  const ccExpiration = document.querySelector('.cc-extra cc-expiration .value');
+  const ccExpiration = document.querySelector('.cc-extra .cc-expiration .value');
 
   ccExpiration.innerText = date?.length === 0 ? '02/32' : date;
 }
