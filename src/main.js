@@ -12,7 +12,7 @@ const ccLogo = document.querySelector('.cc-logo span:nth-child(2) img');
 function setCardType(type) {
   const colors = {
     visa: ['#436D99', '#2D57F2'],
-    masterCard: ['#DF6F29', '#C69347'],
+    mastercard: ['#DF6F29', '#C69347'],
     default: ['black', 'gray'],
   };
 
@@ -20,8 +20,6 @@ function setCardType(type) {
   ccBgColor02.setAttribute('fill', colors[type][2]);
   ccLogo.setAttribute('src', `cc-${type}.svg`);
 }
-
-setCardType('default');
 
 globalThis.setCardType = setCardType;
 
@@ -54,17 +52,17 @@ const cardNumberPattern = {
   mask: [
     {
       mask: '0000 0000 0000 0000',
-      cardType: 'visa',
-      regex: /ˆ4\d{0,15}/,
+      regex: /^4\d{0,15}/,
+      cardtype: 'visa',
     },
     {
       mask: '0000 0000 0000 0000',
-      cardType: 'masterCard',
-      regex: /(ˆ5[1-5]\d{0,12}|ˆ22[2-9]\d|ˆ2[3-7]\d{0,2})\d{0,12}/,
+      regex: /(^5[1-5]\d{0,2}|^22[2-9]\d|^2[3-7]\d{0,2})\d{0,12}/,
+      cardtype: 'mastercard',
     },
     {
       mask: '0000 0000 0000 0000',
-      cardType: 'default',
+      cardtype: 'default',
     },
   ],
   dispatch: function (appended, dynamicMasked) {
@@ -79,3 +77,52 @@ const cardNumberPattern = {
 };
 
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern);
+
+document.querySelector('form').addEventListener('submit', (event) => {
+  event.preventDefault();
+});
+
+const addButton = document.querySelector('#add-card');
+addButton.addEventListener('click', () => {
+  alert('Cartão adicionado ');
+});
+
+const cardHolder = document.querySelector('#card-holder');
+cardHolder.addEventListener('input', () => {
+  const ccHolder = document.querySelector('.cc-holder .value');
+
+  ccHolder.innerText =
+    cardHolder.value.length > 0 ? cardHolder.value : 'FULANO DA SILVA';
+});
+
+securityCodeMasked.on('accept', () => {
+  updateSecurityCode(securityCodeMasked.value);
+});
+
+function updateSecurityCode(code) {
+  const ccSecurity = document.querySelector('cc-security .value');
+
+  ccSecurity.innerText = code.length === 0 ? '123' : code;
+}
+
+cardNumberMasked.on('accept', () => {
+  const cardType = cardNumberMasked.masked.currentMask.cardtype;
+  setCardType(cardType);
+  updateCardNumber(cardNumberMasked.value);
+});
+
+function updateCardNumber(number) {
+  const ccNumber = document.querySelector('.cc-number');
+
+  ccNumber.innerText = number?.length > 0 ? number : '1234 5678 9012 3456';
+};
+
+expirationDateMasked.on('accept', () => {
+  updateExpirationDate(expirationDateMasked.value);
+});
+
+function updateExpirationDate(date) {
+  const ccExpiration = document.querySelector('.cc-extra cc-expiration .value');
+
+  ccExpiration.innerText = date?.length === 0 ? '02/32' : date;
+}
